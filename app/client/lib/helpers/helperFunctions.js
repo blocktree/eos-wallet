@@ -647,9 +647,36 @@ Helpers.getTokenCached = () => {
   return token_contracts;
 };
 
-Helpers.getToken = contract => {
+Helpers.getToken = (contract, symbol) => {
   const contracts = Helpers.getTokenCached();
   return contracts.find(item => {
-    return item.contract === contract;
+    return item.contract === contract && item.symbol === symbol;
   });
+};
+
+Helpers.getTokenCached = () => {
+  const token_contracts =
+    JSON.parse(localStorage.getItem("token_contracts")) || [];
+  token_contracts.unshift({
+    symbol: "EOS",
+    contract: "eosio.token",
+    selected: true,
+    precise: 4
+  });
+  token_contracts.push({
+    contract: "add"
+  });
+  return token_contracts;
+};
+
+Helpers.formatBalance = balance => {
+  const amount = balance.split(" ")[0];
+  const symbol = balance.split(" ")[1];
+  const idx = amount.indexOf(".");
+  const precise = amount.length - (idx === -1 ? 0 : idx) - 1;
+  return {
+    amount,
+    symbol,
+    precise
+  };
 };
